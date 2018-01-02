@@ -1,0 +1,16 @@
+<test>
+    <node1 attr="str">TestNode</node1>
+    <node2>1234567890</node2>
+    <arrays>
+        <array>
+            <item>TestItem1</item>
+            <item>TestItem2</item>
+            <item>TestItem3</item>
+        </array>
+        <array>
+            <index field="Fiz_Dlina" t1 ="sss" t2="fff"/>
+            <index field="Formatir_"/>
+            <index field="ImyaPolya" t2="rrr"/>
+        </array>
+    </arrays>
+</test>
