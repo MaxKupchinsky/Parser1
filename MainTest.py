@@ -1,7 +1,10 @@
-from xml.dom import minidom
-from xml.dom.minidom import Element
+from xml.dom.minidom import parse
+from xml.dom.minidom import Element as mdElement
+from minidom_fixed import *
 
-dom = minidom.parse("test.xml")
+
+
+dom = parse("test.xml")
 dom.normalize()
 
 node1=dom.getElementsByTagName("node1")[0]
@@ -15,7 +18,7 @@ print("\n")
 # """
 for child in dom.getElementsByTagName("array"):
     for ch in child.childNodes:
-        if isinstance(ch, Element):
+        if isinstance(ch, mdElement):
             print(ch.nodeName)
             #print(ch.attributes.item(0).value)
             if ch.getAttribute("field") != "":

@@ -1,17 +1,13 @@
 from xml.dom.minidom import parse
 from xml.dom.minidom import Element as mdElement
 from minidom_fixed import *
-from objects import *
+import objects
 
-dom = parse("Materials\\tasks.xml")
+dom = parse("tasks.xml")
 dom.normalize()
 
-schema = Schema()
-_schema = dom.documentElement
+schema = dom.getElementsByTagName("dbd_schema")[0]
 
-for attr_name, attr_val in _schema.attributes.items():
-    if attr_name == "fulltext_engine":
-        schema.fulltext_engine = attr_val
 
 
 """
@@ -33,3 +29,4 @@ for child in dom.getElementsByTagName("array"):
             #print(ch.childNodes[0].nodeValue)
     print("-----------------\n")
 """
+
