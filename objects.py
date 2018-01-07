@@ -5,9 +5,11 @@ class Schema:
         self.name = None
         self.description = None
 
+        self.domains = []
+        self.tables = []
+
 class Domain:
     def __init__(self):
-        self.id = None
         self.name = None
         self.description = None
         self.type = None
@@ -18,78 +20,74 @@ class Domain:
         self.scale = None
         self.width = None
         self.align = None
-        self.show_null = None
-        self.show_lead_nulls = None
-        self.thousands_separator = None
-        self.summable = None
-        self.case_sensitive = None
-        self.uuid = None
+
+        self.prop_show_null = False
+        self.prop_show_lead_nulls = False
+        self.prop_thousands_separator = False
+        self.prop_summable = False
+        self.prop_case_sensitive = False
 
 class Table:
     def __init__(self):
-        self.id = None
-        self.schema_id = None
         self.name = None
         self.description = None
-        self.can_add = None
-        self.can_edit = None
-        self.can_delete = None
         self.temporal_mode = None
         self.means = None
-        self.uuid = None
+
+        self.prop_add = False
+        self.prop_edit = False
+        self.prop_delete = False
+
+        self.fields = []
+        self.constraints = []
+        self.indexes = []
 
 class Constraint:
     def __init__(self):
-        self.id = None
-        self.table_id = None
         self.name = None
-        self.constraint_type = None
+        self.kind = None
         self.reference = None
-        self.unique_key_id = None
-        self.has_value_edit = None
-        self.cascading_delete = None
         self.expression = None
-        self.uuid = None
+
+        self.prop_value_edit = False
+        self.prop_cascading_delete = False
+        self.prop_full_cascading_delete = False
+
+        self.details = []  # items
 
 class ConstraintDetail:
     def __init__(self):
-        self.id = None
-        self.constraint_id = None
-        self.position = None
-        self.field_id = None
+        self.detail = None
 
 class Index:
     def __init__(self):
-        self.id = None
-        self.table_id = None
         self.name = None
-        self.local = None
-        self.kind = None
-        self.uuid = None
+        self.kind = None  # зависит от prop
+
+        self.prop_local = False
+        self.prop_uniqueness = False
+        self.prop_fulltext = False
+
+        self.details = []  # field
 
 class IndexDetail:
     def __init__(self):
-        self.id = None
-        self.index_id = None
-        self.position = None
-        self.field_id = None
+        self.detail = None
         self.expression = None
         self.descend = None
 
 class Field:
     def __init__(self):
-        self.id = None
-        self.table_id = None
-        self.position = None
         self.name = None
-        self.russian_short_name = None
+        self.rname = None
         self.description = None
-        self.domain_id = None
-        self.can_input = None
-        self.can_edit = None
-        self.show_in_grid = None
-        self.show_in_details = None
-        self.is_mean = None
-        self.autocalculated = None
-        self.required = None
-        self.uuid = None
+        self.domain = None
+        self.type = None
+
+        self.prop_input = False
+        self.prop_edit = False
+        self.prop_show_in_grid = False
+        self.prop_show_in_details = False
+        self.prop_is_mean = False
+        self.prop_autocalculated = False
+        self.prop_required = False
