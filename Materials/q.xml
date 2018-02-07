@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dbd_schema fulltext_engine="ORACLE TEXT" version="1.2" name="TASKS" description="Описатель БД TASKS">
+  <custom/>
+  <domains>
+    <domain name="BinData" type="BLOB" align="L"/>
+    <domain name="CODE" type="STRING" align="L" width="15" char_length="15"/>
+    <domain name="ID пункта" description="Идентификатор пункта содерж." type="LARGEINT" align="L" width="8"/>
+    <domain name="ID статьи" type="LARGEINT" align="L" width="11"/>
+    <domain name="IDC" type="WORD" align="L" width="5"/>
+    <domain name="ID_descr" type="LARGEINT" align="L" width="11"/>
+    <domain name="Layout_id" type="STRING" align="L" width="200" props="case_sensitive" char_length="200"/>
+    <domain name="N" description="Номер" type="LARGEINT" align="L" width="8"/>
+    <domain name="N Исходящ" type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="N письма" type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="N счета" type="STRING" align="L" width="6" char_length="6"/>
+    <domain name="N_Рексофт" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="TextData" type="MEMO" align="L"/>
+    <domain name="id_ACC" description="Первичный ключ таблицы ACCOUNT" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_ACT" description="Первичный ключ таблицы ACT" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_CNTR_V" description="Первичный ключ таблицы CNTR_VID" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_CONTROL" description="Первичный ключ таблицы CONTROL" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_CONT_C" description="Первичный ключ таблицы CONT_CTG" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_CONT_T" description="Первичный ключ таблицы CONT_TIP" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_DEPEND" description="Первичный ключ таблицы DEPENDEN" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_DETAILS" description="Первичный ключ таблицы DETAILS" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_GRTASKS" description="Первичный ключ таблицы GRTASKS" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_INST_C" description="Первичный ключ таблицы INST_CON" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_LC_TEAC" description="Первичный ключ таблицы LC_TEACH" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_OB_BAZ" description="Первичный ключ таблицы OB_BAZ" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_PHOTOT" description="Первичный ключ таблицы PHOTOTAB" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_PRNCMDS" description="Первичный ключ таблицы PRNCMDS" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_PROGRAM" description="Первичный ключ таблицы PROGRAMM" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_PROJ_T" description="Первичный ключ таблицы PROJ_TIP" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_PR_TEAC" description="Первичный ключ таблицы PR_TEACH" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_RIGHTS" description="Первичный ключ таблицы RIGHTS" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_TAB_RTS" description="Первичный ключ таблицы TAB_RTS" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_TASKSCT" description="Первичный ключ таблицы TASKSCTG" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_TAS_POS" description="Первичный ключ таблицы TAS_POST" type="LARGEINT" align="L" width="11"/>
+    <domain name="id_TAS_TIM" description="Первичный ключ таблицы TAS_TIME" type="LARGEINT" align="L" width="11"/>
+    <domain name="mmFileExt" type="STRING" align="L" width="45" char_length="45"/>
+    <domain name="mmFileName" description="Путь" type="STRING" align="L" width="40" char_length="40"/>
+    <domain name="mmSubName" type="STRING" align="L" width="8" char_length="8"/>
+    <domain name="АдресОрг." type="STRING" align="L" width="128" char_length="128"/>
+    <domain name="Актуальна" type="BOOLEAN" align="L" width="3"/>
+    <domain name="БИК" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="Банк" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="БезОбъект." type="BOOLEAN" align="L" width="3"/>
+    <domain name="Ввод" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Верс\Редак" description="Версия, Редакция" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="ВерсПрогр" description="Версия переданной программы" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="ВидПроблем" description="Вид проблемы" type="WORD" align="L" width="2"/>
+    <domain name="Визуализ." type="BOOLEAN" align="L" width="3"/>
+    <domain name="ВремСтатус" type="TIME" align="L" width="8"/>
+    <domain name="Время" type="TIME" align="L" width="5"/>
+    <domain name="ВремяЗаявк" description="Время заявки" type="TIME" align="L" width="8"/>
+    <domain name="ВремяИзмен" type="TIME" align="L" width="5"/>
+    <domain name="ВремяНач" type="TIME" align="L" width="8"/>
+    <domain name="ВремяПост." type="TIME" align="L" width="8"/>
+    <domain name="ВремяСеанс" type="TIME" align="L" width="5"/>
+    <domain name="ВремяСозд" type="TIME" align="L" width="8"/>
+    <domain name="Выборки" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Выдана" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ВысокПриор" description="Высокий приоритет" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Гражд." type="BOOLEAN" align="L" width="3"/>
+    <domain name="Грамотн." type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="Дата" type="DATE" align="L" width="10"/>
+    <domain name="ДатаАктуал" type="DATE" align="L" width="10"/>
+    <domain name="ДатаВыдачи" type="DATE" align="L" width="10"/>
+    <domain name="ДатаВыпуск" description="Дата выпуска" type="DATE" align="L" width="10"/>
+    <domain name="ДатаЗаявки" type="DATE" align="L" width="10"/>
+    <domain name="ДатаИзмен." type="DATE" align="L" width="10"/>
+    <domain name="ДатаКонтак" type="DATE" align="L" width="10"/>
+    <domain name="ДатаКонца" type="DATE" align="L" width="10"/>
+    <domain name="ДатаНачал." type="DATE" align="L" width="10"/>
+    <domain name="ДатаОбъед." type="DATE" align="L" width="10"/>
+    <domain name="ДатаОплаты" type="DATE" align="L" width="10"/>
+    <domain name="ДатаОтправ" type="DATE" align="L" width="10"/>
+    <domain name="ДатаПост." type="DATE" align="L" width="10"/>
+    <domain name="ДатаСеанса" type="DATE" align="L" width="10"/>
+    <domain name="ДатаСтатус" description="Дата установки статуса" type="DATE" align="L" width="10"/>
+    <domain name="ДатаУвольн" type="DATE" align="L" width="10"/>
+    <domain name="Длительн" type="WORD" align="L" width="5"/>
+    <domain name="Должность" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="Дом" type="STRING" align="L" width="6" char_length="6"/>
+    <domain name="Заблокиров" description="Заблокирован пользователь" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Заметки" type="MEMO" align="L" width="3000"/>
+    <domain name="Затраты" description="Трудозатраты" type="FLOAT" align="L" width="6" precision="16" props="show_null, summable" scale="2"/>
+    <domain name="Зачтено" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ЗначТекст" description="Значение текста" type="STRING" align="L" width="250" props="case_sensitive" char_length="250"/>
+    <domain name="ИНН" type="FLOAT" align="L" width="12" precision="16"/>
+    <domain name="Изм.Отчет" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ИзменЛичн" description="Изменять только свои записи" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Изменение" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Имя" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="Имя поля" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="ИмяАдреса" type="STRING" align="L" width="43" char_length="43"/>
+    <domain name="ИмяИсточн" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="ИмяПольз." type="STRING" align="L" width="35" char_length="35"/>
+    <domain name="ИмяПриемн" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="ИмяСименс" type="STRING" align="L" width="60" char_length="60"/>
+    <domain name="ИмяСтанции" type="STRING" align="L" width="8" char_length="8"/>
+    <domain name="ИмяФайла" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="ИмяЭлемент" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="ИндексМеню" type="BYTE" align="L" width="2"/>
+    <domain name="Категория" type="WORD" align="L" width="3"/>
+    <domain name="Кв." type="STRING" align="R" width="6" char_length="6"/>
+    <domain name="КлючНастр" description="Ключ системных настроек" type="STRING" align="L" width="250" props="case_sensitive" char_length="250"/>
+    <domain name="Код в КУПе" type="STRING" align="L" width="4" char_length="4"/>
+    <domain name="КодАдреса" description="Код адреса" type="WORD" align="L" width="5"/>
+    <domain name="КодВажн." type="WORD" align="L" width="1"/>
+    <domain name="КодВедомст" type="BYTE" align="L" width="2"/>
+    <domain name="КодВерсии" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодВидРаб" type="BYTE" align="L" width="2"/>
+    <domain name="КодВх\Исх" type="BYTE" align="L" width="1"/>
+    <domain name="КодГос-ва" type="WORD" align="L" width="4"/>
+    <domain name="КодГруппы" type="LARGEINT" align="L" width="5"/>
+    <domain name="КодДоговор" description="Код договора" type="WORD" align="L" width="5"/>
+    <domain name="КодДопЛиц" type="LARGEINT" align="L" width="10"/>
+    <domain name="КодЖурнВх" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодЖурнИсх" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодЗадачи" type="LARGEINT" align="L" width="12"/>
+    <domain name="КодИмЭлХр" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодИнстр" type="WORD" align="L" width="6"/>
+    <domain name="КодИстории" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодКлиента" type="WORD" align="L" width="4"/>
+    <domain name="КодКоманды" description="Код команды печати" type="WORD" align="L" width="2"/>
+    <domain name="КодКонтакт" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодЛиценз" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодМастера" type="LARGEINT" align="L" width="3"/>
+    <domain name="КодМеню" description="Код элемента" type="CODE" align="L" length="4" precision="3"/>
+    <domain name="КодМенюОбс" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодМульти" type="WORD" align="L" width="3"/>
+    <domain name="КодНасПунк" type="WORD" align="L" width="3"/>
+    <domain name="КодОбласти" type="BYTE" align="L" width="3"/>
+    <domain name="КодОбъедин" type="WORD" align="L" width="3"/>
+    <domain name="КодОргМ1" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодОрганиз" type="LARGEINT" align="L" width="5"/>
+    <domain name="КодОтдела" type="BYTE" align="L" width="1"/>
+    <domain name="КодПарам" description="Код параметра" type="BYTE" align="L" width="2"/>
+    <domain name="КодПередач" type="BYTE" align="L" width="1"/>
+    <domain name="КодПисьмВх" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодПисьмИс" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодПлПор" type="LARGEINT" align="L" width="5"/>
+    <domain name="КодПодразд" type="BYTE" align="L" width="2"/>
+    <domain name="КодПольз." type="CODE" align="L" length="5" precision="2"/>
+    <domain name="КодПоступл" type="BYTE" align="L" width="2"/>
+    <domain name="КодПринт" description="Код принтера" type="BYTE" align="L" width="3"/>
+    <domain name="КодПриорит" type="BYTE" align="L" width="1"/>
+    <domain name="КодПроблем" type="SMALLINT" align="L" width="5"/>
+    <domain name="КодПункта" description="Пункт содержания постановки" type="CODE" align="L" length="10" precision="2"/>
+    <domain name="КодРабКонт" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодРайона" type="WORD" align="L" width="3"/>
+    <domain name="КодРезульт" description="Результат" type="WORD" align="L" width="2"/>
+    <domain name="КодРексофт" type="LARGEINT" align="L" width="6"/>
+    <domain name="КодРешения" type="SMALLINT" align="L" width="5"/>
+    <domain name="КодСеанса" type="LARGEINT" align="L" width="12"/>
+    <domain name="КодСотрудн" type="WORD" align="L" width="4"/>
+    <domain name="КодСтанции" type="WORD" align="L" width="4"/>
+    <domain name="КодСтатуса" type="BYTE" align="L" width="1"/>
+    <domain name="КодТаблицы" type="WORD" align="L" width="5"/>
+    <domain name="КодТексВх" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодТексЗад" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодТексЗая" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодТексИсх" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодТекста" type="LARGEINT" align="L" width="9"/>
+    <domain name="КодТипРес" description="Код типа ресурсов" type="BYTE" align="L" width="2"/>
+    <domain name="КодТипРеш" description="Код тип.решения" type="SMALLINT" align="L" width="5"/>
+    <domain name="КодТипа" type="BYTE" align="L" width="1"/>
+    <domain name="КодТипаКон" type="CODE" align="L" length="2" precision="2"/>
+    <domain name="КодТочност" type="BYTE" align="L" width="1"/>
+    <domain name="КодУдостов" type="LARGEINT" align="L" width="5"/>
+    <domain name="КодХран" type="LARGEINT" align="L" width="11"/>
+    <domain name="КодЦБДУИГ" type="STRING" align="L" width="7" char_length="7"/>
+    <domain name="КодЭкспорт" type="LARGEINT" align="L" width="10"/>
+    <domain name="КодЭлАдрОр" description="Код электронного адреса" type="LARGEINT" align="L" width="5"/>
+    <domain name="КодЭлАдрес" description="Код электронного адреса" type="LARGEINT" align="L" width="5"/>
+    <domain name="КолРайотд" description="Кол-во райотделов" type="BYTE" align="L" width="2"/>
+    <domain name="КоличСтрок" type="LARGEINT" align="L" width="11"/>
+    <domain name="КонтрКлюч" type="BOOLEAN" align="L" width="3"/>
+    <domain name="КонтрПарам" description="Контрольный параметр" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="Кор/счет" description="Корреспондентский счет" type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="Критичн-ть" type="STRING" align="L" width="60" char_length="60"/>
+    <domain name="ЛинияСлуж." type="BYTE" align="L" width="2"/>
+    <domain name="ЛичнПароль" type="STRING" align="L" width="6" char_length="6"/>
+    <domain name="Логин" type="STRING" align="L" width="21" char_length="21"/>
+    <domain name="Междуг.Код" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="Мотивация" type="STRING" align="L" width="100" char_length="100"/>
+    <domain name="НазвГИЦ" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="НазвОбласт" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="НазвОбъед." type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="НазвПодр." type="STRING" align="L" width="60" char_length="60"/>
+    <domain name="НазвПолное" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="НазвПоступ" type="STRING" align="L" width="15" char_length="15"/>
+    <domain name="НазвПрогр." type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="НазвПункта" description="Название пункта содержания" type="STRING" align="L" width="140" char_length="140"/>
+    <domain name="НазвРайона" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="НазвТипа" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="Название" type="STRING" align="L" width="100" char_length="100"/>
+    <domain name="Наименован" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="НаселПункт" description="Населенный пункт" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="НеАктуальн" description="Не актуально" type="BOOLEAN" align="L" width="3"/>
+    <domain name="НеВыбирать" type="BOOLEAN" align="L" width="3"/>
+    <domain name="НеПоказыв." type="BOOLEAN" align="L" width="3"/>
+    <domain name="НеПротокол" type="BOOLEAN" align="L" width="3"/>
+    <domain name="НомУдост." description="Номер" type="LARGEINT" align="L" width="5"/>
+    <domain name="Номер" type="LARGEINT" align="L" width="6"/>
+    <domain name="НомерДокум" description="Номер документа" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="ОКОНХ" type="STRING" align="L" width="5" char_length="5"/>
+    <domain name="ОКПО" type="STRING" align="L" width="8" char_length="8"/>
+    <domain name="Объекты" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ОбъемЧасов" type="BYTE" align="L" width="3"/>
+    <domain name="Ограничен." type="BOOLEAN" align="L" width="3"/>
+    <domain name="ОкончЛицен" description="Срок окончания лицензии" type="DATE" align="L" width="10"/>
+    <domain name="Описание" type="STRING" align="L" width="240" char_length="240"/>
+    <domain name="ОрганФМС" type="STRING" align="L" width="155" char_length="155"/>
+    <domain name="Организац." description="Название организации" type="STRING" align="L" width="150" char_length="150"/>
+    <domain name="Ответств." type="LARGEINT" align="L" width="10"/>
+    <domain name="Отправлен" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ОтчетыОкна" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Оценка" type="FLOAT" align="L" width="3" precision="16" scale="2"/>
+    <domain name="Очередь" type="BYTE" align="L" width="1"/>
+    <domain name="ПоВыборке" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Подразд." description="Подразделение (заполн.для УВД)" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="Подсказка" type="STRING" align="L" width="80" char_length="80"/>
+    <domain name="Поле" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="ПолноеНаим" description="Полное наименование" type="STRING" align="L" width="100" char_length="100"/>
+    <domain name="Порядок" type="BYTE" align="L" width="3"/>
+    <domain name="ПравоИспол" description="Право использования" type="STRING" align="L" width="100" char_length="100"/>
+    <domain name="Примечание" type="STRING" align="L" width="120" char_length="120"/>
+    <domain name="Приоритет" type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="ПричОтказа" type="STRING" align="L" width="100" char_length="100"/>
+    <domain name="Проблемн." type="BOOLEAN" align="L" width="3"/>
+    <domain name="Просмотр" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Р/счет" description="Расчетный счет" type="STRING" align="L" width="30" char_length="30"/>
+    <domain name="Раздел" type="BYTE" align="L" width="2"/>
+    <domain name="Расширение" type="STRING" align="L" width="7" char_length="7"/>
+    <domain name="Регион" type="WORD" align="L" width="3"/>
+    <domain name="РодПадеж" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="СБК" type="BYTE" align="R" width="2"/>
+    <domain name="СетевАдрес" description="Сетевой адрес" type="LARGEINT" align="L" width="5"/>
+    <domain name="СимвКоманд" description="Символ команды печати" type="STRING" align="L" width="3" char_length="3"/>
+    <domain name="СистПароль" type="STRING" align="L" width="6" char_length="6"/>
+    <domain name="Слияние" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Событ" type="BOOLEAN" align="L" width="3"/>
+    <domain name="СокрНазв." type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="Состояние" type="BYTE" align="L" width="1"/>
+    <domain name="Сохр.Файл" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Список" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Срок" description="Ожидаемый срок завершения" type="DATE" align="L" width="10"/>
+    <domain name="Статус" type="STRING" align="L" width="20" char_length="20"/>
+    <domain name="Статья" type="MEMO" align="L" width="10000"/>
+    <domain name="СтрКоманды" description="Управляющая последовательность" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="Сумма" description="Сумма по договору" type="FLOAT" align="R" width="12" precision="16"/>
+    <domain name="Таблица" type="STRING" align="L" width="9" char_length="9"/>
+    <domain name="Телефон" type="STRING" align="L" width="50" char_length="50"/>
+    <domain name="Тема" type="STRING" align="L" width="120" char_length="120"/>
+    <domain name="Тип файла" type="BYTE" align="R" width="3"/>
+    <domain name="ТипАдреса" type="STRING" align="L" width="10" char_length="10"/>
+    <domain name="ТипДоговор" description="Тип договора" type="WORD" align="L" width="3"/>
+    <domain name="ТипКонтакт" type="BYTE" align="L" width="2"/>
+    <domain name="ТипОбуч." type="BYTE" align="L" width="2"/>
+    <domain name="ТипПрогр." type="WORD" align="L" width="2"/>
+    <domain name="ТипСотруд." type="WORD" align="L" width="3"/>
+    <domain name="ТипЭкспорт" type="BYTE" align="L" width="3"/>
+    <domain name="Точность" type="STRING" align="L" width="15" char_length="15"/>
+    <domain name="УдалЛичн" description="Удалять только свои записи" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Удаление" description="Права на удаление" type="BOOLEAN" align="L" width="3"/>
+    <domain name="Улица" type="STRING" align="L" width="15" char_length="15"/>
+    <domain name="УровГрам." type="BYTE" align="L" width="2"/>
+    <domain name="Уровень" type="BYTE" align="L" width="3" props="show_null"/>
+    <domain name="Успех" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ФИО" type="STRING" align="L" width="35" char_length="35"/>
+    <domain name="Фонд" type="BOOLEAN" align="L" width="3"/>
+    <domain name="ХешПароль" type="STRING" align="L" width="40" props="case_sensitive" char_length="40"/>
+  </domains>
+</dbd_schema>

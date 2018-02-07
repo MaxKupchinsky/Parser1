@@ -13,7 +13,6 @@ class Domain:
         self.name = None
         self.description = None
         self.type = None
-        self.data_type_id = None
         self.length = None
         self.char_length = None
         self.precision = None
@@ -49,7 +48,7 @@ class Constraint:
         self.reference = None
         self.expression = None
 
-        self.prop_value_edit = False
+        self.prop_has_value_edit = False
         self.prop_cascading_delete = False
         self.prop_full_cascading_delete = False
 

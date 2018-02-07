@@ -1,7 +1,9 @@
 from xml.dom.minidom import parse
 from xml.dom.minidom import Element as md_element
 from minidom_fixed import *
-from objects import *
+from xml_to_ram import xml_to_ram
+from ram_to_xml import *
+import sys
 
 
 def nn(title, val):
@@ -9,32 +11,6 @@ def nn(title, val):
         return title + " " + str(val)
     else:
         return ""
-
-
-def _get_schema(dom):  # переделать
-    schemas = []
-    dom_schema = dom.getElementsByTagName("dbd_schema")
-    for schema in dom_schema:
-        tmp_schema = Schema()
-        for attr_name, attr_val in schema.attributes.items():
-            if attr_name == "fulltext_engine":
-                tmp_schema.fulltext_engine = attr_val
-            elif attr_name == "version":
-                tmp_schema.version = attr_val
-            elif attr_name == "name":
-                tmp_schema.name = attr_val
-            elif attr_name == "description":
-                tmp_schema.description = attr_val
-
-        for child in schema.childNodes:
-            if isinstance(child, md_element):
-                if child.nodeName == "domains":
-                    tmp_schema.domains = _get_domains(child)
-                elif child.tagName == "tables":
-                    tmp_schema.tables = _get_tables(child)
-        schemas.append(tmp_schema)
-    return schemas
-
 
 def _print_schema(schemas):
     print("SCHEMA")
@@ -49,47 +25,6 @@ def _print_schema(schemas):
         _print_domains(schema.domains)
         _print_tables(schema.tables)
     print()
-
-def _get_domains(dom_domains):
-    domains =[]
-    for domain in dom_domains.childNodes:
-        if isinstance(domain, md_element):
-            tmp_domain = Domain()
-            for attr_name, attr_val in domain.attributes.items():
-                if attr_name == "name":
-                    tmp_domain.name = attr_val
-                elif attr_name == "description":
-                    tmp_domain.description = attr_val
-                elif attr_name == "type":
-                    tmp_domain.type = attr_val
-                elif attr_name == "data_type_id":
-                    tmp_domain.data_type_id = attr_val
-                elif attr_name == "length":
-                    tmp_domain.length = attr_val
-                elif attr_name == "char_length":
-                    tmp_domain.char_length = attr_val
-                elif attr_name == "precision":
-                    tmp_domain.precision = attr_val
-                elif attr_name == "scale":
-                    tmp_domain.scale = attr_val
-                elif attr_name == "width":
-                    tmp_domain.width = attr_val
-                elif attr_name == "align":
-                    tmp_domain.align = attr_val
-                elif attr_name == "props":
-                    for prop in attr_val.split(', '):
-                        if prop == "show_null":
-                            tmp_domain.prop_show_null = True
-                        elif prop == "show_lead_nulls":
-                            tmp_domain.prop_show_lead_nulls = True
-                        elif prop == "thousands_separator":
-                            tmp_domain.prop_thousands_separator = True
-                        elif prop == "summable":
-                            tmp_domain.prop_summable = True
-                        elif prop == "case_sensitive":
-                            tmp_domain.prop_case_sensitive = True
-            domains.append(tmp_domain)
-    return domains
 
 def _print_domains(domains):
     t = 0
@@ -114,31 +49,6 @@ def _print_domains(domains):
             + nn(", case_sensitive =", domain.prop_case_sensitive))
     print()
 
-def _get_tables(dom_tables):
-    tables =[]
-    for table in dom_tables.childNodes:
-        if isinstance(table, md_element):
-            tmp_table = Table()
-            for attr_name, attr_val in table.attributes.items():
-                if attr_name == "name":
-                    tmp_table.name = attr_val
-                elif attr_name == "description":
-                    tmp_table.description = attr_val
-                elif attr_name == "temporal_mode":
-                    tmp_table.temporal_mode = attr_val
-                elif attr_name == "means":
-                    tmp_table.means = attr_val
-                elif attr_name == "props":
-                    for prop in attr_val.split(', '):
-                        if prop == "add":
-                            tmp_table.prop_add = True
-                        elif prop == "edit":
-                            tmp_table.prop_edit = True
-                        elif prop == "delete":
-                            tmp_table.prop_delete = True
-            tables.append(tmp_table)
-    return tables
-
 def _print_tables(tables):
     t = 0
     print("TABLES")
@@ -153,14 +63,17 @@ def _print_tables(tables):
               + nn(", prop_delete =", table.prop_delete))
     print()
 
-def _get_fields(dom):
-    return None
 
-dom = parse("Materials\\tasks.xml")
-dom.normalize()
-_print_schema(_get_schema(dom))
-#_get_domains(dom)
-#_print_domains(_get_domains(dom))
+if __name__ == "__main__":
+    try:
+        dom = "Materials\\tasks.xml"
+        #(xml_to_ram(dom))
+
+    except Exception as e:
+        print(e)
+    ram_to_xml(xml_to_ram(dom)).writexml(sys.stdout)
+
+
 """
 _domain = dom.getElementsByTagName("domains")[0]
 for child in _domain.childNodes:

@@ -1,5 +1,5 @@
 # cash
-_pycache_/
+__pycache__/
 
 #enviroment
 .idea/
