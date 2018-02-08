@@ -224,8 +224,6 @@ def _get_indexes(dom_index):
         for attr_name, attr_val in dom_index.attributes.items():
             if attr_name == "name":
                 tmp_index.name = attr_val
-            elif attr_name == "kind":
-                tmp_index.kind = attr_val
             elif attr_name == "props":
                 for prop in attr_val.split(', '):
                     if prop == "local":
