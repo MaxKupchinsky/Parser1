@@ -4,12 +4,15 @@ from minidom_fixed import *
 from xml_to_ram import xml_to_ram
 from ram_to_xml import *
 from test_xml_ram import test
+from ram_to_dbd import ram_to_dbd
 
 
 if __name__ == "__main__":
+    ram_to_dbd(xml_to_ram('Materials\\tasks.xml'), 'tasks.db')
     try:
-        test('Materials\\tasks.xml', 'Materials\\tasks1.xml')
-        test('Materials\\prjadm.xdb.xml', 'Materials\\prjadm1.xml')
+        print()
+        #test('Materials\\tasks.xml', 'Materials\\tasks1.xml')
+        #test('Materials\\prjadm.xdb.xml', 'Materials\\prjadm1.xml')
     except Exception as e:
         print(e)
     #ram_to_xml(xml_to_ram(dom), "Materials\\q.xml")

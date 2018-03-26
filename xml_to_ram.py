@@ -18,7 +18,7 @@ def xml_to_ram(path):
     return _get_schema(dom)
 
 
-def _get_schema(dom):  # переделать
+def _get_schema(dom):
     schemas = []
     try:
         dom_schema = dom.getElementsByTagName("dbd_schema")

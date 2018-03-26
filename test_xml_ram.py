@@ -9,7 +9,7 @@ def compare(source, result):
         equal = True
         for source_line in source_file:
             result_line = result_file.readline()
-            if source_line.split() != result_line.split():
+            if source_line.split(' ') != result_line.split(' '):
                 print('Differences in:')
                 print(source_line)
                 print(result_line)

@@ -1,21 +1,24 @@
 import sqlite3
-from Materials.dbd_const import *
+from dbd_const import *
+import uuid
 
 
-def ram_to_dbd(schemas, path: str):
+def ram_to_dbd(schemas, path):
     connection = sqlite3.connect(path)
     cursor = connection.cursor()
 
     cursor.executescript(SQL_DBD_Init)
     connection.commit()
 
-    _add_domains(schemas, cursor, connection)
-    _add_tables()
-    _generate_fields()
-    _generate_indexes()
-    _generate_constraints()
+    for schema in schemas:
+        _add_domains(schema, cursor, connection)
+        #_add_tables(schema, cursor, connection)
+        #_add_fields(schema, cursor, connection)
+        #_add_indexes(schema, cursor, connection)
+       # _add_constraints(schema, cursor, connection)
 
-    connection.commit()
+
+    #connection.commit()
     connection.close()
 
 
@@ -24,7 +27,6 @@ def check(val):
         return ""
     else:
         return val
-
 
 def _add_domains(schemas, cursor, connection):
 
@@ -43,8 +45,9 @@ def _add_domains(schemas, cursor, connection):
                 show_lead_nulls,
                 thousands_separator,
                 summable,
-                case_sensitive)
-            VALUES (?, ?, (SELECT id FROM dbd$data_types WHERE type_id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                case_sensitive,
+                uuid)
+            VALUES (?, ?, (SELECT id FROM dbd$data_types WHERE type_id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
             """
 
         Q_CREATE_DOMAINS = """
@@ -63,7 +66,8 @@ def _add_domains(schemas, cursor, connection):
                 show_lead_nulls boolean default(null),      
                 thousands_separator boolean default(null),  
                 summable boolean default(null),             
-                case_sensitive boolean default(null)      
+                case_sensitive boolean default(null),  
+                uuid varchar unique not null   
             );
             """
 
@@ -82,8 +86,9 @@ def _add_domains(schemas, cursor, connection):
                     show_lead_nulls,
                     thousands_separator,
                     summable,
-                    case_sensitive)
-                VALUES (?, ?, (SELECT id FROM dbd$data_types WHERE type_id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    case_sensitive,
+                    uuid)
+                VALUES (?, ?, (SELECT id FROM dbd$data_types WHERE type_id = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """
 
         Q_RELEASE_DOMAINS = """
@@ -101,7 +106,8 @@ def _add_domains(schemas, cursor, connection):
                     show_lead_nulls,
                     thousands_separator,
                     summable,
-                    case_sensitive
+                    case_sensitive,
+                    uuid
                 )
                 SELECT DISTINCT
                     name,
@@ -117,7 +123,8 @@ def _add_domains(schemas, cursor, connection):
                     show_lead_nulls,
                     thousands_separator,
                     summable,
-                    case_sensitive
+                    case_sensitive,
+                    uuid
                 FROM temp_domains;
                 """
 
@@ -139,45 +146,44 @@ def _add_domains(schemas, cursor, connection):
             tmp_domain += 'TRUE' if domain.prop_thousands_separator else 'FALSE',
             tmp_domain += 'TRUE' if domain.prop_summable else 'FALSE',
             tmp_domain += 'TRUE' if domain.prop_case_sensitive else 'FALSE',
+            tmp_domain += uuid.uuid1().hex,
 
             connection.execute(Q_INSERT_DOMAIN, tmp_domain)
 
         cursor.executescript(Q_RELEASE_DOMAINS)
 
-
 def _add_tables(schemas, cursor, connection):
 
-            Q_INSERT_TABLE = """
-                INSERT INTO dbd$tables (
-                    schema_id,
-                    name,
-                    description,
-                    can_add,
-                    can_edit,
-                    can_delete,
-                    temporal_mode,
-                    means)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """
+    Q_INSERT_TABLE = """
+            INSERT INTO dbd$tables (
+                schema_id,
+                name,
+                description,
+                can_add,
+                can_edit,
+                can_delete,
+                temporal_mode,
+                means)
+            VALUES (?, (SELECT id FROM dbd$schemas WHERE name = ?), ?, ?, ?, ?, ?, ?)
+            """
 
-            for table in schemas.tables:
-                tmp_table = ()
-                tmp_table += "",  # schema_id
-                tmp_table += check(table.name),
-                tmp_table += check(table.description),
+    for table in schemas.tables:
+        tmp_table = ()
+        tmp_table +=schemas.name,
+        tmp_table += check(table.name),
+        tmp_table += check(table.description),
+        tmp_table += 'TRUE' if table.prop_add else 'FALSE',
+        tmp_table += 'TRUE' if table.prop_edit else 'FALSE',
+        tmp_table += 'TRUE' if table.prop_delete else 'FALSE',
+        tmp_table += check(table.temporal_mode),
+        tmp_table += check(table.means),
 
-                tmp_table += 'TRUE' if table.prop_add else 'FALSE',
-                tmp_table += 'TRUE' if table.prop_edit else 'FALSE',
-                tmp_table += 'TRUE' if table.prop_delete else 'FALSE',
+        connection.execute(Q_INSERT_TABLE, tmp_table)
 
-                tmp_table += check(table.temporal_mode),
-                tmp_table += check(table.means),
 
-                connection.execute(Q_INSERT_TABLE, tmp_table)
+def _add_fields(schemas, cursor, connection):
 
- def __generate_fields(schemas, cursor, connection):
-
-        SQL_CREATE_TEMP_FIELDS = """
+        Q_CREATE_TMP_FIELDS = """
             DROP TABLE IF EXISTS temp_dbd$fields;
             CREATE TEMP TABLE temp_dbd$fields (
                 id integer primary key autoincrement default(null),
@@ -187,19 +193,6 @@ def _add_tables(schemas, cursor, connection):
                 russian_short_name varchar not null,
                 description varchar default(null),
                 d_id varchar not null,
-                d_description varchar default(null),  
-                d_data_type_id integer not null,      
-                d_length integer default(null),      
-                d_char_length integer default(null),  
-                d_precision integer default(null),   
-                d_scale integer default(null),        
-                d_width integer default(null),       
-                d_align char default(null),           
-                d_show_null boolean default(null),    
-                d_show_lead_nulls boolean default(null),      
-                d_thousands_separator boolean default(null),  
-                d_summable boolean default(null),            
-                d_case_sensitive boolean default(null),     
                 can_input boolean default(null),
                 can_edit boolean default(null),
                 show_in_grid boolean default(null),
@@ -210,7 +203,7 @@ def _add_tables(schemas, cursor, connection):
             );
             """
 
-        DML_INSERT_TEMP_FIELD = """
+        Q_INSERT_FIELD = """
             INSERT INTO temp_dbd$fields (
                 t_id,
                 position,
@@ -218,19 +211,6 @@ def _add_tables(schemas, cursor, connection):
                 russian_short_name,
                 description,
                 d_id,
-                d_description,
-                d_data_type_id,
-                d_length,
-                d_char_length,
-                d_precision,
-                d_scale,
-                d_width,
-                d_align,
-                d_show_null,
-                d_show_lead_nulls,
-                d_thousands_separator,
-                d_summable,
-                d_case_sensitive,
                 can_input,
                 can_edit,
                 show_in_grid,
@@ -238,10 +218,10 @@ def _add_tables(schemas, cursor, connection):
                 is_mean,
                 autocalculated,
                 required)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
 
-        DML_JOIN_AND_SAVE_FIELDS = """
+        Q_RELEASE_FIELDS = """
             INSERT INTO dbd$fields (
                 table_id,
                 position,
@@ -271,24 +251,12 @@ def _add_tables(schemas, cursor, connection):
                 temp_dbd$fields.is_mean,
                 temp_dbd$fields.autocalculated,
                 temp_dbd$fields.required
-            FROM temp_dbd$fields, dbd$domains, dbd$tables
-            WHERE temp_dbd$fields.t_id = dbd$tables.name
-                AND temp_dbd$fields.d_id IS dbd$domains.name
-                AND temp_dbd$fields.d_description IS dbd$domains.description
-                AND temp_dbd$fields.d_length IS dbd$domains.length
-                AND temp_dbd$fields.d_char_length IS dbd$domains.char_length
-                AND temp_dbd$fields.d_precision IS dbd$domains.precision
-                AND temp_dbd$fields.d_scale IS dbd$domains.scale
-                AND temp_dbd$fields.d_width IS dbd$domains.width
-                AND temp_dbd$fields.d_align IS dbd$domains.align
-                AND temp_dbd$fields.d_show_null IS dbd$domains.show_null
-                AND temp_dbd$fields.d_show_lead_nulls IS dbd$domains.show_lead_nulls
-                AND temp_dbd$fields.d_thousands_separator IS dbd$domains.thousands_separator
-                AND temp_dbd$fields.d_summable IS dbd$domains.summable
-                AND temp_dbd$fields.d_case_sensitive IS dbd$domains.case_sensitive;
+            FROM temp_dbd$fields
+            INNER JOIN dbd$tables ON dbd$tables.name = temp_dbd$fields.t_id
+            INNER JOIN dbd$domains ON dbd$domains.name = temp_dbd$fields.d_id
             """
 
-        cursor.executescript(SQL_CREATE_TEMP_FIELDS)
+        cursor.executescript(Q_CREATE_TMP_FIELDS)
 
         for table in schemas.tables:
             for field in table.fields:
@@ -299,58 +267,24 @@ def _add_tables(schemas, cursor, connection):
                 target_field += check(field.name),
                 target_field += check(field.rname),
                 target_field += check(field.description),
+                target_field += check(field.name),
 
-                if field.domain is not None:
-                    domain = field.domain
-                    target_field += domain.name,
-                    target_field += check(domain.description),
-                    target_field += check(domain.type),
-                    target_field += check(domain.length),
-                    target_field += check(domain.char_length),
-                    target_field += check(domain.precision),
-                    target_field += check(domain.scale),
-                    target_field += check(domain.width),
-                    target_field += check(domain.align),
+                target_field += 'TRUE' if field.prop_input else 'FALSE',
+                target_field += 'TRUE' if field.prop_edit else 'FALSE',
+                target_field += 'TRUE' if field.prop_show_in_grid else 'FALSE',
+                target_field += 'TRUE' if field.prop_show_in_details else 'FALSE',
+                target_field += 'TRUE' if field.prop_is_mean else 'FALSE',
+                target_field += 'TRUE' if field.prop_autocalculated else 'FALSE',
+                target_field += 'TRUE' if field.prop_required else 'FALSE',
 
-                    # Props
-                    target_field += 'TRUE' if domain.show_null else 'FALSE',
-                    target_field += 'TRUE' if domain.show_lead_nulls else 'FALSE',
-                    target_field += 'TRUE' if domain.thousands_separator else 'FALSE',
-                    target_field += 'TRUE' if domain.summable else 'FALSE',
-                    target_field += 'TRUE' if domain.case_sensitive else 'FALSE',
-                else:
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
-                    target_field += "",
+                connection.execute(Q_INSERT_FIELD, target_field)
 
-                target_field += 'TRUE' if field.can_input else 'FALSE',
-                target_field += 'TRUE' if field.can_edit else 'FALSE',
-                target_field += 'TRUE' if field.show_in_grid else 'FALSE',
-                target_field += 'TRUE' if field.show_in_details else 'FALSE',
-                target_field += 'TRUE' if field.is_mean else 'FALSE',
-                target_field += 'TRUE' if field.autocalculated else 'FALSE',
-                target_field += 'TRUE' if field.required else 'FALSE',
-
-                connection.execute(DML_INSERT_TEMP_FIELD, target_field)
-
-        cursor.executescript(DML_JOIN_AND_SAVE_FIELDS)
+        cursor.executescript(Q_RELEASE_FIELDS)
 
 
-def __generate_indexes(schemas, cursor, connection):
-    # SQL-константы
+def _add_indexes(schemas, cursor, connection):
 
-    SQL_CREATE_TEMP_INDEXES = """
+    Q_CREATE_TMP_INDEXES = """
             DROP TABLE IF EXISTS temp_dbd$indexes;
             CREATE TEMP TABLE temp_dbd$indexes (
                 id integer primary key autoincrement default(null),
@@ -361,7 +295,7 @@ def __generate_indexes(schemas, cursor, connection):
             );
             """
 
-    SQL_CREATE_TEMP_INDEXES_DETAILS = """
+    Q_CREATE_TMP_INDEXES_DETAILS = """
         DROP TABLE IF EXISTS temp_dbd$index_details;
         CREATE TEMP TABLE temp_dbd$index_details (
             id integer primary key autoincrement default(null),
@@ -370,11 +304,11 @@ def __generate_indexes(schemas, cursor, connection):
             field_name varchar default(null),
             expression varchar default(null),
             descend boolean default(null),
-            tab_name varchar not null
+            tab_name varchar not null 
         )
         """
 
-    DML_ADD_TEMP_INDEX = """
+    Q_ADD_TMP_INDEX = """
         INSERT INTO temp_dbd$indexes (
             t_name,
             name,
@@ -383,7 +317,7 @@ def __generate_indexes(schemas, cursor, connection):
         VALUES (?, ?, ?, ?);
         """
 
-    DML_ADD_TEMP_INDEX_DETAIL = """
+    Q_ADD_TMP_INDEX_DETAIL = """
         INSERT INTO temp_dbd$index_details (
             index_name,
             position,
@@ -394,7 +328,7 @@ def __generate_indexes(schemas, cursor, connection):
         VALUES (?, ?, ?, ?, ?, ?)
         """
 
-    DML_JOIN_AND_SAVE_INDEXES = """
+    Q_RELEASE_INDEXES = """
         INSERT INTO dbd$indices
             SELECT
                 null,
@@ -419,61 +353,47 @@ def __generate_indexes(schemas, cursor, connection):
             LEFT JOIN dbd$fields ON (temp_dbd$index_details.field_name = dbd$fields.name) AND (dbd$fields.table_id = dbd$tables.id);
         """
 
-    DELETE_TEMP_INDEXES_NAMES = """
-            UPDATE dbd$indices
-            SET name=NULL
-            WHERE name LIKE 'temp_%';
-        """
+    cursor.executescript(Q_CREATE_TMP_INDEXES)
+    cursor.executescript(Q_CREATE_TMP_INDEXES_DETAILS)
 
-    self.cursor.executescript(SQL_CREATE_TEMP_INDEXES)
-    self.cursor.executescript(SQL_CREATE_TEMP_INDEXES_DETAILS)
-
-    for table in self.schema.tables:
+    for table in schemas.tables:
         for index in table.indexes:
 
-            # Получаем имя индекса, либо создаём временное
-            name = index.name
-            if name is None:
-                name = self.__get_temp_index_name()
-
-            target_index, target_index_detail = (), ()
-            target_index += table.name,
-            target_index += name,
-            target_index += 'TRUE' if index.local is not None else 'FALSE',
+            tmp_index, target_index_detail = (), ()
+            tmp_index += table.name,
+            tmp_index += index.name,
+            tmp_index += 'TRUE' if index.prop_local else 'FALSE',
 
             # Props
-            if index.uniqueness is not None:
-                target_index += 'U',
-            elif index.fulltext is not None:
-                target_index += 'T',
+            if index.prop_uniqueness:
+                tmp_index += 'U',
+            elif index.prop_fulltext:
+                tmp_index += 'T',
             else:
-                target_index += '',
+                tmp_index += '',
 
-            self.cursor.execute(DML_ADD_TEMP_INDEX, target_index)
+            cursor.execute(Q_ADD_TMP_INDEX, tmp_index)
 
             # Позиция индекса
             position = table.indexes.index(index) + 1
 
-            target_index_detail += name,
+            target_index_detail += index.name,
             target_index_detail += position,
-            target_index_detail += is_null(index.field),
-            target_index_detail += is_null(index.expression),
+            target_index_detail += check(index.field),
+            target_index_detail += check(index.expression),
 
             target_index_detail += 'TRUE' if index.descend is not None else 'FALSE',
 
-            target_index_detail += is_null(table.name),
+            target_index_detail += check(table.name),
 
-            self.cursor.execute(DML_ADD_TEMP_INDEX_DETAIL, target_index_detail)
+            cursor.execute(Q_ADD_TMP_INDEX_DETAIL, target_index_detail)
 
     # Заполняем таблицу dbd$indices и удаляем временные имена
-    self.cursor.executescript(DML_JOIN_AND_SAVE_INDEXES)
-    self.cursor.executescript(DELETE_TEMP_INDEXES_NAMES)
+    cursor.executescript(Q_RELEASE_INDEXES)
 
+def _add_constraints(schemas, cursor, connection):
 
-def __generate_constraints(schemas, cursor, connection):
-    # SQL-константы
-
-    SQL_CREATE_TEMP_CONSTRAINTS = """
+    Q_CREATE_TMP_CONSTRAINTS = """
             DROP TABLE IF EXISTS temp_dbd$constraints;
             CREATE TEMP TABLE temp_dbd$constraints (
                 id integer primary key autoincrement default (null),
@@ -488,7 +408,7 @@ def __generate_constraints(schemas, cursor, connection):
             );
             """
 
-    SQL_CREATE_TEMP_CONSTRAINT_DETAILS = """
+    Q_CREATE_TMP_CONSTRAINT_DETAILS = """
             DROP TABLE IF EXISTS temp_dbd$constraint_details;
             CREATE TEMP TABLE temp_dbd$constraint_details (
                 id integer primary key autoincrement default(null),
@@ -499,7 +419,7 @@ def __generate_constraints(schemas, cursor, connection):
             );
             """
 
-    DML_ADD_TEMP_CONSTRAINT = """
+    Q_ADD_TMP_CONSTRAINT = """
             INSERT INTO temp_dbd$constraints (
                 table_name,
                 constraint_name,
@@ -512,7 +432,7 @@ def __generate_constraints(schemas, cursor, connection):
             VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             """
 
-    DML_ADD_TEMP_CONSTRAINT_DETAIL = """
+    Q_ADD_TMP_CONSTRAINT_DETAIL = """
             INSERT INTO temp_dbd$constraint_details (
                 constraint_name,
                 position,
@@ -521,7 +441,7 @@ def __generate_constraints(schemas, cursor, connection):
             VALUES (?, ?, ?, ?);
             """
 
-    DML_JOIN_AND_SAVE_CONSTRAINTS = """
+    Q_RELEASE_CONSTRAINTS = """
             INSERT INTO dbd$constraints
                 SELECT
                 null,
@@ -566,46 +486,38 @@ def __generate_constraints(schemas, cursor, connection):
                 WHERE name LIKE 'temp_%';
             """
 
-    self.cursor.executescript(SQL_CREATE_TEMP_CONSTRAINTS)
-    self.cursor.executescript(SQL_CREATE_TEMP_CONSTRAINT_DETAILS)
+    cursor.executescript(Q_CREATE_TMP_CONSTRAINTS)
+    cursor.executescript(Q_CREATE_TMP_CONSTRAINT_DETAILS)
 
-    for table in self.schema.tables:
+    for table in schemas.tables:
         for constraint in table.constraints:
-
-            # Получаем имя констрейнта, либо создаём временное
-            name = constraint.name
-            if name is None:
-                name = self.__get_temp_constraint_name()
 
             target_constraint, target_constraint_detail = (), ()
             target_constraint += table.name,
-            target_constraint += name,
+            target_constraint += constraint.name,
             target_constraint += "P" if "PRIMARY" in constraint.kind else "F",
-            target_constraint += is_null(constraint.reference),
+            target_constraint += check(constraint.reference),
             target_constraint += "",
 
-            # Props
-            target_constraint += 'TRUE' if constraint.has_value_edit is not None else 'FALSE',
-
-            if constraint.full_cascading_delete is not None:
+            target_constraint += 'TRUE' if constraint.prop_has_value_edit else 'FALSE',
+            if constraint.prop_full_cascading_delete:
                 target_constraint += 'TRUE',
-            elif constraint.cascading_delete is not None:
+            elif constraint.prop_cascading_delete is not None:
                 target_constraint += "FALSE",
             else:
                 target_constraint += "NULL",
 
-            target_constraint += is_null(constraint.expression),
-            self.cursor.execute(DML_ADD_TEMP_CONSTRAINT, target_constraint)
+            target_constraint += check(constraint.expression),
+            cursor.execute(Q_ADD_TMP_CONSTRAINT, target_constraint)
 
             # Позиция констрейнта
             position = table.constraints.index(constraint) + 1
-
-            target_constraint_detail += name,
+            target_constraint_detail += constraint.name,
             target_constraint_detail += position,
-            target_constraint_detail += is_null(constraint.items),
+            target_constraint_detail += check(constraint.items),
             target_constraint_detail += table.name,
-            self.cursor.execute(DML_ADD_TEMP_CONSTRAINT_DETAIL, target_constraint_detail)
+            cursor.execute(Q_ADD_TMP_CONSTRAINT_DETAIL, target_constraint_detail)
 
     # Заполняем таблицу dbd$indices и удаляем временные имена
-    self.cursor.executescript(DML_JOIN_AND_SAVE_CONSTRAINTS)
-    self.cursor.executescript(DELETE_TEMP_CONSTRAINTS_NAMES)
+    cursor.executescript(Q_RELEASE_CONSTRAINTS)
+    cursor.executescript(DELETE_TEMP_CONSTRAINTS_NAMES)
